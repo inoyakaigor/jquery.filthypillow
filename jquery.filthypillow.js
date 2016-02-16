@@ -19,11 +19,11 @@
         maxDateTime: null, //function returns moment obj
         initialDateTime: null, //function returns moment obj
         enableCalendar: true,
-        steps: [ "month", "day", "hour", "minute", "meridiem" ],
-				exitOnBackgroundClick: true,
-        enable24HourTime: false,
+        steps: [ "month", "day", "hour", "minute", "seconds", "meridiem" ],
+        exitOnBackgroundClick: true,
+        enable24HourTime: true,
         calendar: {
-					isPinned: false,
+          isPinned: false,
           saveOnDateSelect: false
         }
       },
@@ -51,7 +51,8 @@
                   '<span class="fp-month fp-option"></span>/<span class="fp-day fp-option"></span>' +
                 '</div>' +
                 '<div class="fp-clock">' +
-                  '<span class="fp-hour fp-option"></span>:<span class="fp-minute fp-option"></span>' +
+                  '<span class="fp-hour fp-option"></span>:<span class="fp-minute fp-option"></span>:' +
+                  '<span class="fp-seconds fp-option"></span>' +
                   '<span class="fp-meridiem fp-option"></span>' +
                 '</div>' +
                 '<div class="fp-save"><button class="btn btn-primary fp-save-button" type="button">Save</button></div>' +
@@ -88,6 +89,7 @@
       this.$clock = this.$container.find( ".fp-clock" );
       this.$hour = this.$clock.find( ".fp-hour" );
       this.$minute = this.$clock.find( ".fp-minute" );
+      this.$seconds = this.$clock.find( ".fp-seconds" );
       this.$meridiem = this.$clock.find( ".fp-meridiem" );
 
       this.$errorBox = this.$container.find( ".fp-errors" );
@@ -105,6 +107,7 @@
           onSelectDate: $.proxy( function( year, month, date, opts ) {
             this.updateDateTimeUnit( "month", month, false );
             this.updateDateTimeUnit( "date", date, false );
+            console.info(date);
             this.updateDateTimeUnit( "year", year, false );
 
             if( this.options.calendar.saveOnDateSelect && opts.activeDateClicked )
@@ -186,6 +189,9 @@
     },
 
     updateDigit: function( step, digit, value ) {
+    console.info("step", step);
+    console.info("digit", digit);
+    console.info("value", value);
       var fakeValue, precedingDigit, moveNext = false;
 
       if( step === "meridiem" )
@@ -219,7 +225,7 @@
       else
         fakeValue = this.formatToMoment( step, fakeValue );
 
-			if( !this.isValidDigitInput( fakeValue ) ) {
+      if( !this.isValidDigitInput( fakeValue ) ) {
         if( this.currentDigit === 2 )
           this.currentDigit = 1;
         return;
@@ -235,6 +241,8 @@
         moveNext = true;
       else if( step === "minute" && value > 5 )
         moveNext = true;
+      else if( step === "seconds" && value > 5 )
+        moveNext = true; // true
 
       this.updateDateTimeUnit( step, fakeValue, moveNext );
     },
@@ -249,6 +257,7 @@
     },
 
     onKeyUp: function( e ) {
+    console.info(e);
       var keyCode = e.keyCode || e.which;
       if( this.currentStep === "meridiem" )
         return;
@@ -293,7 +302,9 @@
         this.changeDateTimeUnit( "hour", offset );
       }
       else if( this.currentStep === "minute" )
-        this.changeDateTimeUnit( this.currentStep, -15 );
+        this.changeDateTimeUnit( this.currentStep, -1 );
+      else if( this.currentStep === "seconds" )
+        this.changeDateTimeUnit( this.currentStep, -1 );
       else if( this.currentStep )
         this.changeDateTimeUnit( this.currentStep, -1 );
 
@@ -307,7 +318,9 @@
         this.changeDateTimeUnit( "hour", offset );
       }
       else if( this.currentStep === "minute" )
-        this.changeDateTimeUnit( this.currentStep, 15 );
+        this.changeDateTimeUnit( this.currentStep, 1 );
+      else if( this.currentStep === "seconds")
+        this.changeDateTimeUnit( this.currentStep, 1 );
       else if( this.currentStep )
         this.changeDateTimeUnit( this.currentStep, 1 );
 
@@ -353,8 +366,8 @@
 
       this.$document.on( "keydown." + this.id, $.proxy( this.onKeyDown, this ) );
       this.$document.on( "keyup." + this.id, $.proxy( this.onKeyUp, this ) );
-			if( this.options.exitOnBackgroundClick )
-				this.$window.on( "click." + this.id, $.proxy( this.onClickToExit, this ) );
+      if( this.options.exitOnBackgroundClick )
+        this.$window.on( "click." + this.id, $.proxy( this.onClickToExit, this ) );
     },
 
     removeEvents: function( ) {
@@ -385,6 +398,7 @@
       this.$day.text( this.dateTime.format( "DD" ) );
       this.$hour.text( this.dateTime.format( !this.options.enable24HourTime ? "hh" : "HH" )  );
       this.$minute.text( this.dateTime.format( "mm" ) );
+      this.$seconds.text( this.dateTime.format( "ss" ) );
       if( !this.options.enable24HourTime )
         this.$meridiem.text( this.dateTime.format( "A" ) );
 
