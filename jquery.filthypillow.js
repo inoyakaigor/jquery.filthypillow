@@ -1,6 +1,6 @@
-/* jquery.filthypillow v.1.4.0
+/* jquery.filthypillow v.2.0.0
  * simple and fancy datetimepicker
- * by aef
+ * by aef and inoyakaigor
  */
 ( function( factory ) {
 	if ( typeof define === 'function' && define.amd ) {
@@ -19,7 +19,7 @@
         maxDateTime: null, //function returns moment obj
         initialDateTime: null, //function returns moment obj
         enableCalendar: true,
-        steps: [ "day", "month", "hour", "minute", "second"],
+        steps: [ "day", "month", "year",  "hour", "minute", "second"],
         exitOnBackgroundClick: true,
         enable24HourTime: true,
         calendar: {
@@ -48,7 +48,7 @@
   FilthyPillow.prototype = {
     template: '<div class="fp-container">' +
                 '<div class="fp-calendar">' +
-                  '<span class="fp-day fp-option"></span>/<span class="fp-month fp-option"></span>' +
+                  '<span class="fp-day fp-option"></span>/<span class="fp-month fp-option"></span>/<span class="fp-year fp-option"></span>' +
                 '</div>' +
                 '<div class="fp-clock">' +
                   '<span class="fp-hour fp-option"></span>:<span class="fp-minute fp-option"></span>:' +
@@ -85,6 +85,7 @@
 
       this.$day = this.$calendar.find( ".fp-day" );
       this.$month = this.$calendar.find( ".fp-month" );
+      this.$year = this.$calendar.find( ".fp-year" );
 
       this.$clock = this.$container.find( ".fp-clock" );
       this.$hour = this.$clock.find( ".fp-hour" );
@@ -140,7 +141,7 @@
       this.currentDigit = 0;
       this.isActiveLeadingZero = 0;
       if( this.options.enableCalendar ) {
-        if( step === "day" || step === "month" )
+        if( step === "day" || step === "month" || step == "year")
           this.calendar.show( );
         else if( !this.options.calendar.isPinned ) 
           this.calendar.hide( );
@@ -237,7 +238,7 @@
         moveNext = true;
       else if( step === "minute" && value > 5 )
         moveNext = true;
-      else if( step === "second"/* && value > 5 */)
+      else if( step === "second" && value > 5 )
         moveNext = true;
 
       this.updateDateTimeUnit( step, fakeValue, moveNext );
@@ -391,6 +392,7 @@
     renderDateTime: function( ) {
       this.$day.text( this.dateTime.format( "DD" ) );
       this.$month.text( this.dateTime.format( "MM" ) );
+      this.$year.text( this.dateTime.format( "YYYY" ) );
       this.$hour.text( this.dateTime.format( !this.options.enable24HourTime ? "hh" : "HH" )  );
       this.$minute.text( this.dateTime.format( "mm" ) );
       this.$second.text( this.dateTime.format( "ss" ) );
@@ -441,7 +443,7 @@
     dateChange: function( ) {
       if( this.options.enableCalendar ) {
         this.calendar.setDate( this.dateTime );
-        if( this.currentStep === "day" || this.currentStep === "month" )
+        if( this.currentStep === "day" || this.currentStep === "month" || this.currentStep === "year" )
           this.calendar.render( );
       }
       this.$element.trigger("fp:datetimechange", [ this.dateTime ]);
