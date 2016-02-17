@@ -19,7 +19,7 @@
         maxDateTime: null, //function returns moment obj
         initialDateTime: null, //function returns moment obj
         enableCalendar: true,
-        steps: [ "month", "day", "hour", "minute", "seconds", "meridiem" ],
+        steps: [ "day", "month", "hour", "minute", "second"],
         exitOnBackgroundClick: true,
         enable24HourTime: true,
         calendar: {
@@ -48,11 +48,11 @@
   FilthyPillow.prototype = {
     template: '<div class="fp-container">' +
                 '<div class="fp-calendar">' +
-                  '<span class="fp-month fp-option"></span>/<span class="fp-day fp-option"></span>' +
+                  '<span class="fp-day fp-option"></span>/<span class="fp-month fp-option"></span>' +
                 '</div>' +
                 '<div class="fp-clock">' +
                   '<span class="fp-hour fp-option"></span>:<span class="fp-minute fp-option"></span>:' +
-                  '<span class="fp-seconds fp-option"></span>' +
+                  '<span class="fp-second fp-option"></span>' +
                   '<span class="fp-meridiem fp-option"></span>' +
                 '</div>' +
                 '<div class="fp-save"><button class="btn btn-primary fp-save-button" type="button">Save</button></div>' +
@@ -71,7 +71,7 @@
 
     setup: function( ) {
       this.steps = this.options.steps;
-      this.stepRegExp = new RegExp( this.steps.join( "|" ) )
+      this.stepRegExp = new RegExp( this.steps.join( "|" ) );
       this.$window = $( window );
       this.$document = $( document );
       this.$body = $( "body" );
@@ -83,13 +83,13 @@
       this.$calendar = this.$container.find( ".fp-calendar" );
       this.$options = this.$container.find( ".fp-option" );
 
-      this.$month = this.$calendar.find( ".fp-month" );
       this.$day = this.$calendar.find( ".fp-day" );
+      this.$month = this.$calendar.find( ".fp-month" );
 
       this.$clock = this.$container.find( ".fp-clock" );
       this.$hour = this.$clock.find( ".fp-hour" );
       this.$minute = this.$clock.find( ".fp-minute" );
-      this.$seconds = this.$clock.find( ".fp-seconds" );
+      this.$second = this.$clock.find( ".fp-second" );
       this.$meridiem = this.$clock.find( ".fp-meridiem" );
 
       this.$errorBox = this.$container.find( ".fp-errors" );
@@ -105,9 +105,8 @@
           minDateTime: this.options.minDateTime,
           maxDateTime: this.options.maxDateTime,
           onSelectDate: $.proxy( function( year, month, date, opts ) {
-            this.updateDateTimeUnit( "month", month, false );
             this.updateDateTimeUnit( "date", date, false );
-            console.info(date);
+            this.updateDateTimeUnit( "month", month, false );
             this.updateDateTimeUnit( "year", year, false );
 
             if( this.options.calendar.saveOnDateSelect && opts.activeDateClicked )
@@ -189,9 +188,6 @@
     },
 
     updateDigit: function( step, digit, value ) {
-    console.info("step", step);
-    console.info("digit", digit);
-    console.info("value", value);
       var fakeValue, precedingDigit, moveNext = false;
 
       if( step === "meridiem" )
@@ -241,8 +237,8 @@
         moveNext = true;
       else if( step === "minute" && value > 5 )
         moveNext = true;
-      else if( step === "seconds" && value > 5 )
-        moveNext = true; // true
+      else if( step === "second"/* && value > 5 */)
+        moveNext = true;
 
       this.updateDateTimeUnit( step, fakeValue, moveNext );
     },
@@ -257,7 +253,6 @@
     },
 
     onKeyUp: function( e ) {
-    console.info(e);
       var keyCode = e.keyCode || e.which;
       if( this.currentStep === "meridiem" )
         return;
@@ -303,7 +298,7 @@
       }
       else if( this.currentStep === "minute" )
         this.changeDateTimeUnit( this.currentStep, -1 );
-      else if( this.currentStep === "seconds" )
+      else if( this.currentStep === "second" )
         this.changeDateTimeUnit( this.currentStep, -1 );
       else if( this.currentStep )
         this.changeDateTimeUnit( this.currentStep, -1 );
@@ -319,7 +314,7 @@
       }
       else if( this.currentStep === "minute" )
         this.changeDateTimeUnit( this.currentStep, 1 );
-      else if( this.currentStep === "seconds")
+      else if( this.currentStep === "second")
         this.changeDateTimeUnit( this.currentStep, 1 );
       else if( this.currentStep )
         this.changeDateTimeUnit( this.currentStep, 1 );
@@ -357,13 +352,13 @@
 
     onSave: function( ) {
       if( this.isInRange( this.dateTime ) )
+        dadad = this.dateTime;
         this.$element.trigger( "fp:save", [ this.dateTime ] );
     },
 
     addEvents: function( ) {
       this.$options.on( "click", $.proxy( this.onOptionClick, this ) );
       this.$saveButton.on( "click", $.proxy( this.onSave, this ) );
-
       this.$document.on( "keydown." + this.id, $.proxy( this.onKeyDown, this ) );
       this.$document.on( "keyup." + this.id, $.proxy( this.onKeyUp, this ) );
       if( this.options.exitOnBackgroundClick )
@@ -394,11 +389,11 @@
         this.moveRight( );
     },
     renderDateTime: function( ) {
-      this.$month.text( this.dateTime.format( "MM" ) );
       this.$day.text( this.dateTime.format( "DD" ) );
+      this.$month.text( this.dateTime.format( "MM" ) );
       this.$hour.text( this.dateTime.format( !this.options.enable24HourTime ? "hh" : "HH" )  );
       this.$minute.text( this.dateTime.format( "mm" ) );
-      this.$seconds.text( this.dateTime.format( "ss" ) );
+      this.$second.text( this.dateTime.format( "ss" ) );
       if( !this.options.enable24HourTime )
         this.$meridiem.text( this.dateTime.format( "A" ) );
 
