@@ -11,16 +11,19 @@
     </style>
   </head>
   <body>
-    <div class="filthypillow"></div>
+    <input class="filthypillow">
     <script type="text/javascript">
-      var now = moment( ).subtract( "seconds", 1 ),
-          later = moment( ).add( "days", 7 );
-      $( ".filthypillow" ).filthypillow( {
-        minDateTime: function( ) {
-          return now;
-        }
-      } );
-      $( ".filthypillow" ).filthypillow( "show" );
+      var now = moment(),
+          later = moment().add("days", 7 );
+          $fp = $( ".filthypillow" );
+          $( ".filthypillow" ).filthypillow();
+          $fp.on( "focus", function( ) {
+            $fp.filthypillow( "show" );
+          });
+          $fp.on( "fp:save", function( e, dateObj ) {
+          $fp.val( dateObj.format( "DD MMM YYYY hh:mm:ss" ) );
+          $fp.filthypillow( "hide" );
+          }); 
     </script> 
   </body>
 </html>
