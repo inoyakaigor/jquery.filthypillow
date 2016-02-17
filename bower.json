@@ -5,10 +5,11 @@
 		"jquery.filthypillow.css"
 	],
   "description": "A small and fancy calendar/date-time picker with tests",
-  "version": "1.4.0",
-  "homepage": "https://github.com/aef-/jquery.filthypillow",
+  "version": "2.0.0",
+  "homepage": "https://github.com/inoyakaigor/jquery.filthypillow",
   "authors": [
     "aef <aef@catch-colt.com>"
+    "Igor <inoyakaigor@ya.ru>"
   ],
   "license": "Public Domain",
 	"dependencies": {

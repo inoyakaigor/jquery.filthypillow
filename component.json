@@ -1,8 +1,8 @@
 {
 	"name": "jquery.filthypillow",
-	"repo": "aef-/jquery.filthypillow",
+	"repo": "inoyakaigor/jquery.filthypillow",
 	"description": "A small and fancy calendar/date-time picker",
-	"version": "1.4.0",
+	"version": "2.0.0",
 	"keywords": [ "calendar", "datetime", "time", "datepicker", "timepicker", "datetimepicker" ],
 	"dependencies": {
 		"component/jquery": ">=1.9.1",
